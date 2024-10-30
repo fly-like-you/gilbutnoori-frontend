@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>여행 계획하기</title>
+  </head>
+  <body>
+    <nav>
+      <h1>길벗누리</h1>
+      <a href="index.html">홈으로</a>
+      <a href="login.html">로그인</a>
+      <a href="#">로그아웃</a>
+      <a href="mytrip.html">마이페이지</a>
+    </nav>
+    <form action="trip-create-detail.html">
+      <fieldset>
+        <legend><h2>여행 계획</h2></legend>
+        <h1>여행 날자를 선택해주세요</h1>
+        <label for="date">여행 시작날자</label>
+        <input type="date" name="date" id="date" /><br /><br />
+        <label for="date">여행 종료날자</label>
+        <input type="date" name="date" id="date" />
+        <h1>탐험하고 싶은 코스를 선택해주세요</h1>
+
+        <select name="course" id="course">
+          <option value="1">남파랑길 1코스</option>
+          <option value="2">남파랑길 2코스</option>
+          <option value="3">남파랑길 3코스</option>
+        </select>
+        <br /><br />
+        <input type="submit" value="생성" />
+      </fieldset>
+    </form>
+    <fieldset>
+      <legend><h3>2024년 11월 06일 ~ 2024년 11월 08일 날씨 정보</h3></legend>
+      <ul>
+        <li>
+          <p>2024년 11월 6일</p>
+          <ul>
+            <li>맑음</li>
+            <li>미세먼지 보통</li>
+          </ul>
+        </li>
+        <li>
+          <p>2024년 11월 7일</p>
+          <ul>
+            <li>맑음</li>
+            <li>미세먼지 많음</li>
+          </ul>
+        </li>
+        <li>
+          <p>2024년 11월 8일</p>
+          <ul>
+            <li>비</li>
+            <li>미세먼지 낮음</li>
+          </ul>
+        </li>
+      </ul>
+    </fieldset>
+  </body>
+</html>
