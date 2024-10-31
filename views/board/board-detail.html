@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>둘레길 A 후기</title>
+  </head>
+  <body>
+    <nav>
+      <h1>길벗누리</h1>
+      <a href="../index.html">홈으로</a>
+      <a href="../member/login.html">로그인</a>
+      <a href="#">로그아웃</a>
+      <a href="../trip/mytrip.html">마이페이지</a>
+    </nav>
+    <h1>둘레길 A 후기</h1>
+    <a href="board.html">목록으로 이동하기</a>
+
+    <!-- 게시물 상세 내용 -->
+    <div class="post-detail">
+      <h2>둘레길 A는 정말 아름답고 걷기 좋은 코스였어요</h2>
+      <p>작성자: 사용자1</p>
+      <p>작성일: 2023-10-28</p>
+
+      <!-- 사진 (선택 사항) -->
+      <div>
+        <img src="../assets/부산야경.jfif" alt="후기 사진" />
+      </div>
+    </div>
+    <textarea style="width: 300px; height: 150px">
+내용: 이 둘레길은 경치도 좋고 도보 코스가 잘 정비되어 있어서 누구나 편하게 걸을 수 있었어요...</textarea
+    >
+
+    <!-- 댓글 작성 폼 -->
+    <h3>댓글 남기기</h3>
+    <form action="/submit_comment" method="POST">
+      <div>
+        <label for="comment-author">작성자</label>
+        <input type="text" id="comment-author" name="comment_author" required />
+      </div>
+
+      <div>
+        <label for="comment-content">댓글 내용</label>
+        <textarea id="comment-content" name="comment_content" rows="3" required></textarea>
+      </div>
+
+      <button type="submit">댓글 등록</button>
+    </form>
+
+    <!-- 댓글 리스트 -->
+    <div class="comments">
+      <div class="comment">
+        <p>작성자: 사용자2</p>
+        <p>내용: 정말 좋은 정보 감사합니다! 저도 다음에 가보려고요.</p>
+        <p>작성일: 2023-10-28</p>
+      </div>
+
+      <div class="comment">
+        <p>작성자: 사용자3</p>
+        <p>내용: 저도 다녀왔는데 정말 좋았어요!</p>
+        <p>작성일: 2023-10-27</p>
+      </div>
+    </div>
+  </body>
+</html>
