@@ -11,6 +11,7 @@ const localAxios = () => {
   // Request 인터셉터 추가
   instance.interceptors.request.use(
     (config) => {
+      console.log(1111);
       const token = localStorage.getItem("user")
         ? JSON.parse(localStorage.getItem("user")).token
         : null;
@@ -36,7 +37,7 @@ const localAxios = () => {
         try {
           const user = JSON.parse(localStorage.getItem("user"));
           const response = await instance.post("/auth/refresh", {
-            refreshToken: user.refreshToken
+            refreshToken: user.refreshToken,
           });
           const newToken = response.data.token;
           const updatedUser = { ...user, token: newToken };

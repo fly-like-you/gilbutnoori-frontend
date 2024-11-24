@@ -95,7 +95,7 @@
     loginId: '',
     password: '',
   });
-
+  console.log("AppLogin.vue 멤버 로그인");
   const handleLogin = async () => {
     if (!form.value?.validate()) return;
 
@@ -107,7 +107,7 @@
         loginId: formData.value.loginId,
         password: formData.value.password,
       });
-
+      console.log("loginId",formData.value.loginId);
       if (success) {
         showSnackbar({
           text: '로그인되었습니다.',
