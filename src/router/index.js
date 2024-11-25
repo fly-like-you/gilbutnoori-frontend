@@ -35,7 +35,7 @@ const routes = [
 
   {
     path: "/board",
-    name: "Board",
+    name: "BoardList",
     component: () => import("../components/board/BoardList.vue"),
     meta: { requiresAuth: true },
   },

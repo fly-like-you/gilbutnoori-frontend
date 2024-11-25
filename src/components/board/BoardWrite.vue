@@ -11,7 +11,7 @@
               <v-row no-gutters>
                 <v-col cols="12">
                   <v-icon class="mr-2">mdi-map-marker-path</v-icon>
-                  {{ selectedTravel ? selectedTravel.title : '여행 선택하기' }}
+                  {{ selectedTravel ? selectedTravel.title : "여행 선택하기" }}
                 </v-col>
               </v-row>
             </v-expansion-panel-title>
@@ -38,7 +38,7 @@
         </v-expansion-panels>
 
         <!-- 여행 선택 시 좌우 분할 레이아웃 -->
-        <v-row v-if="selectedTravel">
+        <v-row v-if="true">
           <!-- 왼쪽: 여정 표시 섹션 -->
           <v-col cols="12" md="4" class="pr-md-4">
             <v-card class="sticky-card">
@@ -59,7 +59,11 @@
                       <v-card class="mt-4">
                         <v-row no-gutters>
                           <v-col cols="12" md="4" v-if="plan.attraction.firstImage1">
-                            <v-img :src="plan.attraction.firstImage1" height="200" cover></v-img>
+                            <v-img
+                              :src="plan.attraction.firstImage1"
+                              height="200"
+                              cover
+                            ></v-img>
                           </v-col>
                           <v-col cols="12" :md="plan.attraction.firstImage1 ? 8 : 12">
                             <v-card-text>
@@ -83,8 +87,10 @@
                     <template v-else-if="plan.course">
                       <v-card class="elevation-1 mt-4">
                         <v-card-text>
-                          <div class="text-h6 mb-1">{{ plan.course.name || '코스' }}</div>
-                          <v-chip size="small" color="secondary" class="mr-2"> 코스 </v-chip>
+                          <div class="text-h6 mb-1">{{ plan.course.name || "코스" }}</div>
+                          <v-chip size="small" color="secondary" class="mr-2">
+                            코스
+                          </v-chip>
                         </v-card-text>
                       </v-card>
                     </template>
@@ -138,11 +144,20 @@
 
                 <!-- 미리보기 이미지 -->
                 <v-row v-if="imagePreviewUrls.length > 0" class="mb-4">
-                  <v-col v-for="(url, index) in imagePreviewUrls" :key="index" cols="12" sm="6" md="4">
+                  <v-col
+                    v-for="(url, index) in imagePreviewUrls"
+                    :key="index"
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
                     <v-img :src="url" aspect-ratio="16/9" cover class="bg-grey-lighten-2">
                       <template v-slot:placeholder>
                         <v-row class="fill-height ma-0" align="center" justify="center">
-                          <v-progress-circular indeterminate color="grey-lighten-5"></v-progress-circular>
+                          <v-progress-circular
+                            indeterminate
+                            color="grey-lighten-5"
+                          ></v-progress-circular>
                         </v-row>
                       </template>
                     </v-img>
@@ -153,7 +168,14 @@
                 <v-card-actions class="pt-4">
                   <v-spacer></v-spacer>
                   <v-btn color="grey" variant="outlined" @click="cancel">취소</v-btn>
-                  <v-btn color="primary" :loading="loading" :disabled="!isFormValid" type="submit"> 등록 </v-btn>
+                  <v-btn
+                    color="primary"
+                    :loading="loading"
+                    :disabled="!isFormValid"
+                    type="submit"
+                  >
+                    등록
+                  </v-btn>
                 </v-card-actions>
               </v-form>
             </v-card>
@@ -164,7 +186,10 @@
         <v-row v-else>
           <v-col cols="12">
             <v-card class="pa-6">
-              <v-alert type="info" text="여행을 선택하면 후기를 작성할 수 있습니다."></v-alert>
+              <v-alert
+                type="info"
+                text="여행을 선택하면 후기를 작성할 수 있습니다."
+              ></v-alert>
             </v-card>
           </v-col>
         </v-row>
@@ -179,10 +204,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { registArticle } from '@/api/board';
-import { listTravels } from '@/api/travel';
+import { ref, computed, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import { registArticle } from "@/api/board";
+import { listTravels } from "@/api/travel";
 
 // 라우터 설정
 const router = useRouter();
@@ -191,27 +216,29 @@ const router = useRouter();
 const form = ref(null);
 const travels = ref([]);
 const selectedTravel = ref(null);
-const title = ref('');
-const content = ref('');
+const title = ref("");
+const content = ref("");
 const images = ref([]);
 const imagePreviewUrls = ref([]);
 const loading = ref(false);
 const snackbar = ref({
   show: false,
-  text: '',
-  color: 'success',
+  text: "",
+  color: "success",
 });
 
 // 정렬된 여행 계획 computed 속성
 const sortedPlans = computed(() => {
   if (!selectedTravel.value?.plans?.planResult) return [];
 
-  return [...selectedTravel.value.plans.planResult].sort((a, b) => a.sequence - b.sequence);
+  return [...selectedTravel.value.plans.planResult].sort(
+    (a, b) => a.sequence - b.sequence
+  );
 });
 
 // 폼 유효성 검사
 const isFormValid = computed(() => {
-  return title.value && content.value && selectedTravel.value;
+  return title.value && content.value;
 });
 
 // 여행 목록 가져오기
@@ -232,7 +259,7 @@ const fetchTravels = async () => {
 // 여행 선택
 const selectTravel = (travel) => {
   selectedTravel.value = travel;
-  console.log('Selected travel plans:', travel.plans.planResult);
+  console.log("Selected travel plans:", travel.plans.planResult);
 };
 
 // 이미지 미리보기 생성
@@ -256,27 +283,28 @@ const submitBoard = async () => {
   const formData = {
     title: title.value,
     content: content.value,
-    travelId: selectedTravel.value.id,
+    travelId: selectedTravel.value?.id,
   };
 
   registArticle(
     formData,
     () => {
-      showSnackbar('후기가 성공적으로 등록되었습니다.');
-      router.push({ name: 'BoardList' }); // 게시글 목록으로 이동
+      showSnackbar("후기가 성공적으로 등록되었습니다.");
+      router.push({ name: "BoardList" }); // 게시글 목록으로 이동
     },
     (error) => {
-      showSnackbar('후기 등록에 실패했습니다.', error);
+      console.log(error);
+      showSnackbar("후기 등록에 실패했습니다.", error);
     }
   );
 };
 
 // 유틸리티 함수
 const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString('ko-KR');
+  return new Date(dateString).toLocaleDateString("ko-KR");
 };
 
-const showSnackbar = (text, color = 'success') => {
+const showSnackbar = (text, color = "success") => {
   snackbar.value = {
     show: true,
     text,
