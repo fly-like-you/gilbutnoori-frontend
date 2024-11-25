@@ -27,11 +27,16 @@ function detailArticle(id, success, fail) {
 // 게시글 등록
 function registArticle(article, success, fail) {
   const token = getToken(TOKEN_TYPE.ACCESS);
-  local.post(`/boards`, article, {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }).then(success).catch(fail);
+
+  console.log("게시글 등록 요청 보낼게요 -> ", article);
+  local
+    .post(`/boards`, article, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then(success)
+    .catch(fail);
 }
 
 // 수정할 게시글 조회
@@ -64,11 +69,5 @@ function deleteArticle(id, success, fail) {
   }).then(success).catch(fail);
 }
 
-export {
-  listArticle,
-  detailArticle,
-  registArticle,
-  getModifyArticle,
-  modifyArticle,
-  deleteArticle,
-};
+export { listArticle, detailArticle, registArticle, getModifyArticle, modifyArticle, deleteArticle };
+

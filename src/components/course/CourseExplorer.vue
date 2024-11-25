@@ -89,8 +89,25 @@
 </template>
 
 <script>
+// import { listRoutes } from "@/api/route";
+// import { onMounted, ref } from "vue";
+// const routes = ref([]);
+// const getRoutes = () => {
+//   listRoutes(
+//     (response) => {
+//       const routes = response.data.result.routes;
+//       console.log(routes);
+//     },
+//     (error) => {
+//       console.error("조회 실패", error);
+//     }
+//   );
+// };
+// onMounted(() => {
+//   getRoutes();
+// });
 export default {
-  name: 'CourseExplorer',
+  name: "CourseExplorer",
 
   data() {
     return {
