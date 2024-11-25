@@ -45,9 +45,10 @@
             {{ article.created_at }}
 
             <!-- Edit Post Button -->
-            <v-card-actions>
+            <v-card-actions v-show="isBoardOwner">
               <v-spacer></v-spacer>
-              <v-btn color="primary" @click="goToEdit">수정하기</v-btn>
+              <v-btn color="primary" @click="goToEdit(article.id)">수정하기</v-btn>
+              <v-btn color="error" @click="deleteBoard(article.id)">삭제하기</v-btn>
             </v-card-actions>
           </v-card-subtitle>
 
@@ -74,7 +75,7 @@
                         <v-list-item-subtitle>{{ comment.content }}</v-list-item-subtitle>
                       </div>
                       <v-spacer></v-spacer>
-                      <div v-if="isCommentOwner(comment)">
+                      <div v-if="getIsOwner(comment)">
                         <v-btn-group density="compact">
                           <v-btn icon size="small" @click="startEdit(comment)">
                             <v-icon>mdi-pencil</v-icon>
@@ -132,7 +133,14 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { detailArticle, registComment, updateCommentApi, deleteCommentApi } from "@/api/board";
+import {
+  detailArticle,
+  registComment,
+  updateCommentApi,
+  deleteCommentApi,
+  userInfoApi,
+  deleteArticle,
+} from "@/api/board";
 
 const article = ref({});
 const plans = ref([]);
@@ -144,14 +152,65 @@ const editingComment = ref(null);
 const editedContent = ref("");
 const commentToDelete = ref(null);
 
+const commentOwners = ref({});
+const deleteBoard = (boardId) => {
+  deleteArticle(
+    boardId,
+    () => {
+      router.push({
+        name: "BoardList",
+      });
+    },
+    (error) => {
+      console.error("게시글 삭제 실패:", error);
+    }
+  );
+};
 // Sort plans by sequence
 const sortedPlans = computed(() => {
   return plans.value ? [...plans.value].sort((a, b) => a.sequence - b.sequence) : [];
 });
 
-// Comment owner check
-const isCommentOwner = (comment) => {
-  return comment.nickname !== article.value.nickname;
+const getArticle = async () => {
+  const id = route.params.id;
+  detailArticle(
+    id,
+    async ({ data }) => {
+      if (data.isSuccess) {
+        article.value = data.result;
+        plans.value = data.result.travel?.plans?.planResult;
+        await checkCommentOwnership();
+        const response = await userInfoApi();
+        isBoardOwner.value = response.data.result.nickname === article.value.nickname;
+      } else {
+        alert(data.message || "게시글을 불러오는데 실패했습니다.");
+      }
+    },
+    (error) => {
+      console.error("게시글 조회 실패:", error);
+      alert("게시글 조회에 실패했습니다.");
+      router.push({ name: "BoardList" });
+    }
+  );
+};
+const isBoardOwner = ref(false);
+// 2. 컴포넌트에 수정된 코드 적용
+const checkCommentOwnership = async () => {
+  if (article.value?.comments?.comments) {
+    for (const comment of article.value.comments.comments) {
+      try {
+        const response = await userInfoApi();
+        commentOwners.value[comment.id] = comment.nickname === response.data.result.nickname;
+      } catch (error) {
+        console.error("Failed to verify comment owner:", error);
+        commentOwners.value[comment.id] = false;
+      }
+    }
+  }
+};
+
+const getIsOwner = (comment) => {
+  return commentOwners.value[comment.id] || false;
 };
 
 // Edit comment functions
@@ -227,33 +286,16 @@ const getImageUrl = (fileId) => {
   return `http://localhost:8080/files/${fileId}`;
 };
 // Navigation
-const goToEdit = () => {
-  router.push(`/board/edit/${article.value.id}`);
+const goToEdit = (id) => {
+  router.push({
+    name: "BoardModify",
+    params: id,
+  });
 };
 
-const getArticle = async () => {
-  const id = route.params.id;
-  detailArticle(
-    id,
-    ({ data }) => {
-      if (data.isSuccess) {
-        console.log(data);
-        article.value = data.result;
-        plans.value = data.result.travel?.plans?.planResult;
-      } else {
-        alert(data.message || "게시글을 불러오는데 실패했습니다.");
-      }
-    },
-    (error) => {
-      console.error("게시글 조회 실패:", error);
-      alert("게시글 조회에 실패했습니다.");
-      router.push({ name: "BoardList" });
-    }
-  );
-};
-
-onMounted(() => {
-  getArticle();
+onMounted(async () => {
+  await getArticle();
+  await checkCommentOwnership();
 });
 </script>
 <style scoped>

@@ -62,7 +62,7 @@ function getModifyArticle(id, success, fail) {
 function modifyArticle(article, success, fail) {
   const token = getToken(TOKEN_TYPE.ACCESS);
   local
-    .post(`/boards/modify/${article.id}`, article, {
+    .put(`/boards/modify/${article.id}`, article, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -123,6 +123,16 @@ function deleteCommentApi(commentId, success, fail) {
     .then(success)
     .catch(fail);
 }
+
+// 1. userInfoApi 수정
+function userInfoApi() {
+  const token = getToken(TOKEN_TYPE.ACCESS);
+  return local.get(`/user/info`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
 export {
   listArticle,
   detailArticle,
@@ -133,4 +143,5 @@ export {
   registComment,
   updateCommentApi,
   deleteCommentApi,
+  userInfoApi,
 };

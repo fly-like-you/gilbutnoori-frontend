@@ -36,11 +36,7 @@
         </v-row>
 
         <!-- 로딩 상태 -->
-        <v-progress-linear
-          v-if="isLoading"
-          indeterminate
-          color="primary"
-        ></v-progress-linear>
+        <v-progress-linear v-if="isLoading" indeterminate color="primary"></v-progress-linear>
 
         <!-- 게시글 목록 -->
         <transition name="fade">
@@ -112,8 +108,6 @@ const param = ref({
   page: 0,
   size: 10,
   sort: "id,desc",
-  searchType: "title",
-  searchQuery: "",
 });
 
 const searchTypes = [
