@@ -36,18 +36,17 @@ export const useMemberStore = defineStore("memberStore", () => {
       const response = await local.post(`/user/login`, loginUser);
       if (response.status === httpStatusCode.OK || response.status === httpStatusCode.CREATE) {
         const { data } = response;
-
-        setToken(TOKEN_TYPE.ACCESS, data.result.accessToken);
-        setToken(TOKEN_TYPE.REFRESH, data.result.refreshToken);
+        setToken(TOKEN_TYPE.ACCESS, data["access-token"]);
+        setToken(TOKEN_TYPE.REFRESH, data["refresh-token"]);
         isLogin.value = true;
         isLoginError.value = false;
         isValidToken.value = true;
-
+        
         // 사용자 정보 설정
         if (data.userInfo) {
           userInfo.value = data.userInfo;
         }
-
+        
         return true;
       }
       return false;
@@ -76,11 +75,14 @@ export const useMemberStore = defineStore("memberStore", () => {
 
   const tokenRegenerate = async () => {
     try {
-      const response = await local.post(`/user/refresh`, JSON.stringify(userInfo.value), {
-        headers: {
-          refreshToken: getToken(TOKEN_TYPE.REFRESH),
-        },
-      });
+      const response = await local.post(`/user/refresh`, 
+        JSON.stringify(userInfo.value),
+        {
+          headers: {
+            "refreshToken": getToken(TOKEN_TYPE.REFRESH)
+          }
+        }
+      );
 
       if (response.status === httpStatusCode.CREATE) {
         setToken(TOKEN_TYPE.ACCESS, response.data["access-token"]);
@@ -110,7 +112,7 @@ export const useMemberStore = defineStore("memberStore", () => {
         isValidToken.value = false;
         return true;
       }
-
+      
       const response = await local.get(`/user/logout/${userInfo.value.userId}`);
       if (response.status === httpStatusCode.OK) {
         removeAllTokens();
@@ -150,6 +152,6 @@ export const useMemberStore = defineStore("memberStore", () => {
     getUserInfo,
     tokenRegenerate,
     userLogout,
-    checkLoginState,
+    checkLoginState
   };
 });

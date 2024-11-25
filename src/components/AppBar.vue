@@ -78,36 +78,36 @@ export default {
       <v-spacer></v-spacer>
 
       <!-- 메인 네비게이션 -->
-      <div class="d-none d-md-flex">
+      <v-toolbar-items class="d-none d-md-flex">
         <v-btn text class="mx-2" @click="() => handleProtectedRoute('/travel')">
-          <v-icon left>mdi-airplane</v-icon>
+          <v-icon start>mdi-airplane</v-icon>
           여행지
         </v-btn>
 
         <v-btn text class="mx-2" @click="() => handleProtectedRoute('/support')">
-          <v-icon left>mdi-help-circle</v-icon>
+          <v-icon start>mdi-help-circle</v-icon>
           고객지원
         </v-btn>
 
         <v-btn v-if="isAuthenticated" text class="mx-2" to="/plan">
-          <v-icon left>mdi-calendar</v-icon>
+          <v-icon start>mdi-calendar</v-icon>
           여행계획하기
         </v-btn>
 
         <v-btn text class="mx-2" @click="() => handleProtectedRoute('/board')">
-          <v-icon left>mdi-post</v-icon>
+          <v-icon start>mdi-post</v-icon>
           게시판
         </v-btn>
-      </div>
+      </v-toolbar-items>
 
       <!-- 비로그인 상태 -->
       <template v-if="!isAuthenticated">
         <v-btn text class="mx-2" @click="$router.push('/signup')">
-          <v-icon left>mdi-account-plus</v-icon>
+          <v-icon start>mdi-account-plus</v-icon>
           회원가입
         </v-btn>
         <v-btn text class="mx-2" @click="$emit('openLogin')">
-          <v-icon left>mdi-login</v-icon>
+          <v-icon start>mdi-login</v-icon>
           로그인
         </v-btn>
       </template>

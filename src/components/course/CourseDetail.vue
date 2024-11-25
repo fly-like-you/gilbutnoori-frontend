@@ -1,226 +1,202 @@
 <template>
-  <div class="map-container">
-    <!-- 로딩 표시 -->
-    <v-progress-circular
-      v-if="loading"
-      indeterminate
-      color="primary"
-      class="loading-indicator"
-    ></v-progress-circular>
-
-    <!-- 지도 컨테이너 -->
-    <div id="map" style="width: 100%; height: 500px;"></div>
+  <v-container>
+    <!-- 로딩 상태 -->
+    <div v-if="loading" class="d-flex justify-center align-center" style="height: 400px">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </div>
 
     <!-- 에러 메시지 -->
-    <v-alert
-      v-if="error"
-      type="error"
-      class="mt-4"
-    >
+    <v-alert v-else-if="error" type="error" class="mb-4">
       {{ error }}
     </v-alert>
 
-    <!-- 경로 정보 -->
-    <v-card v-if="pathInfo" class="mt-4">
-      <v-card-title>경로 정보</v-card-title>
-      <v-card-text>
-        <div>총 거리: {{ pathInfo.distance }}km</div>
-        <div>예상 소요시간: {{ pathInfo.duration }}분</div>
-      </v-card-text>
-    </v-card>
-  </div>
+    <!-- 코스 리스트 -->
+    <v-row v-else>
+      <v-col v-for="course in courses" :key="course.id" cols="12" sm="6" lg="4">
+        <v-card class="h-100" hover>
+          <!-- 카드 이미지 -->
+          <v-img
+            height="200"
+            :src="getRandomImage(course.id)"
+            class="bg-grey-lighten-2"
+            cover
+          >
+            <!-- 난이도 뱃지 -->
+            <v-chip
+              class="ma-2"
+              :color="getLevelColor(course.level)"
+              label
+              text-color="white"
+            >
+              난이도 {{ course.level }}
+            </v-chip>
+          </v-img>
+
+          <v-card-title class="text-h6">
+            {{ course.name }}
+          </v-card-title>
+
+          <v-card-text>
+            <!-- 기본 정보 칩 -->
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <v-chip
+                size="small"
+                color="primary"
+                label
+              >
+                {{ course.dist }}km
+              </v-chip>
+              <v-chip
+                size="small"
+                color="secondary"
+                label
+              >
+                {{ formatTime(course.turnaround) }}
+              </v-chip>
+              <v-chip
+                size="small"
+                label
+              >
+                {{ course.cycle }}
+              </v-chip>
+            </div>
+
+            <!-- 코스 요약 -->
+            <p class="mb-4" v-html="course.summary"></p>
+
+            <!-- 위치 정보 -->
+            <div class="d-flex align-center">
+              <v-icon size="small" color="primary" class="me-1">
+                mdi-map-marker
+              </v-icon>
+              <span class="text-body-2">{{ course.sigun }}</span>
+            </div>
+          </v-card-text>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="primary"
+              variant="text"
+              @click="viewCourseDetail(course.id)"
+            >
+              상세 보기
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <!-- 페이지네이션 -->
+    <div class="d-flex justify-center mt-6">
+      <v-pagination
+        v-if="totalPages > 1"
+        v-model="currentPage"
+        :length="totalPages"
+        :total-visible="7"
+        @update:model-value="handlePageChange"
+      ></v-pagination>
+    </div>
+  </v-container>
 </template>
 
-<script>
-export default {
-  name: 'CourseDetail',
-  props: {
-    courseId: {
-      type: String,
-      required: true
-    }
-  },
-  data() {
-    return {
-      map: null,
-      path: null,
-      loading: false,
-      error: null,
-      coordinates: [],
-      pathInfo: null
-    }
-  },
-  methods: {
-    initializeKakaoMap() {
-      return new Promise((resolve) => {
-        if (window.kakao && window.kakao.maps) {
-          // 이미 로드된 경우
-          this.initMap();
-          resolve();
-        } else {
-          // 로드되지 않은 경우 로드 대기
-          const script = document.createElement('script');
-          script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=f6c418eb4436b545e5fdb79fe4c4e71e&autoload=false`;
-          script.onload = () => {
-            window.kakao.maps.load(() => {
-              this.initMap();
-              resolve();
-            });
-          };
-          document.head.appendChild(script);
-        }
-      });
-    },
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 
-    initMap() {
-      const container = document.getElementById('map');
-      const options = {
-        center: new window.kakao.maps.LatLng(37.566826, 126.9786567),
-        level: 8
-      };
-      this.map = new window.kakao.maps.Map(container, options);
-    },
+const router = useRouter();
+const courses = ref([]);
+const loading = ref(false);
+const error = ref(null);
+const currentPage = ref(1);
+const totalPages = ref(0);
+const itemsPerPage = 9; // 페이지당 보여줄 항목 수
 
-    async fetchGpxData() {
-      this.loading = true;
-      this.error = null;
+// 난이도별 색상
+const getLevelColor = (level) => {
+  const colors = {
+    1: 'success',
+    2: 'info',
+    3: 'warning',
+    4: 'error'
+  };
+  return colors[level] || 'grey';
+};
 
-      try {
-        const response = await fetch(`http://localhost:8080/courses/map/${this.courseId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
+// 시간 포맷팅
+const formatTime = (minutes) => {
+  if (!minutes) return '정보 없음';
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+  return `${hours}시간 ${mins}분`;
+};
 
-        if (!response.ok) {
-          throw new Error('GPX 데이터를 불러오는데 실패했습니다.');
-        }
+// 랜덤 이미지 생성 (실제 구현시에는 실제 이미지로 교체)
+const getRandomImage = (id) => {
+  return `https://picsum.photos/seed/${id}/500/300`;
+};
 
-        const gpxData = await response.text();
-        this.coordinates = this.parseGpxData(gpxData);
-        this.drawPath();
-        this.calculatePathInfo();
-      } catch (error) {
-        console.error('GPX 데이터 로딩 오류:', error);
-        this.error = error.message;
-      } finally {
-        this.loading = false;
+// 코스 데이터 가져오기
+const fetchCourses = async (page = 1) => {
+  loading.value = true;
+  try {
+    const response = await axios.get(`http://localhost:8080/courses`, {
+      params: {
+        page: page - 1, // 백엔드는 0-based pagination
+        size: itemsPerPage,
+        sort: 'id,desc'
       }
-    },
+    });
 
-    parseGpxData(gpxData) {
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(gpxData, "text/xml");
-      const trackpoints = xmlDoc.getElementsByTagName("trkpt");
-      const coordinates = [];
-
-      for (let point of trackpoints) {
-        const lat = parseFloat(point.getAttribute("lat"));
-        const lon = parseFloat(point.getAttribute("lon"));
-        if (!isNaN(lat) && !isNaN(lon)) {
-          coordinates.push(new window.kakao.maps.LatLng(lat, lon));
-        }
-      }
-
-      return coordinates;
-    },
-
-    drawPath() {
-      if (this.coordinates.length === 0) {
-        this.error = "유효한 경로 데이터가 없습니다.";
-        return;
-      }
-
-      // 기존 경로가 있다면 제거
-      if (this.path) {
-        this.path.setMap(null);
-      }
-
-      // 새 경로 그리기
-      this.path = new window.kakao.maps.Polyline({
-        path: this.coordinates,
-        strokeWeight: 4,
-        strokeColor: '#DB4455',
-        strokeOpacity: 0.7,
-        strokeStyle: 'solid'
-      });
-
-      this.path.setMap(this.map);
-
-      // 경로가 모두 보이도록 지도 범위 조정
-      const bounds = new window.kakao.maps.LatLngBounds();
-      this.coordinates.forEach(coordinate => {
-        bounds.extend(coordinate);
-      });
-      this.map.setBounds(bounds);
-    },
-
-    calculatePathInfo() {
-      if (this.coordinates.length < 2) return;
-
-      let totalDistance = 0;
-      for (let i = 1; i < this.coordinates.length; i++) {
-        const prev = this.coordinates[i - 1];
-        const curr = this.coordinates[i];
-        totalDistance += this.getDistance(prev, curr);
-      }
-
-      this.pathInfo = {
-        distance: (totalDistance / 1000).toFixed(2), // km로 변환
-        duration: Math.round(totalDistance / 1000 * 15) // km당 15분으로 계산
-      };
-    },
-
-    getDistance(point1, point2) {
-      const lat1 = point1.getLat();
-      const lon1 = point1.getLng();
-      const lat2 = point2.getLat();
-      const lon2 = point2.getLng();
-
-      const R = 6371e3; // 지구의 반경 (미터)
-      const φ1 = lat1 * Math.PI / 180;
-      const φ2 = lat2 * Math.PI / 180;
-      const Δφ = (lat2 - lat1) * Math.PI / 180;
-      const Δλ = (lon2 - lon1) * Math.PI / 180;
-
-      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                Math.cos(φ1) * Math.cos(φ2) *
-                Math.sin(Δλ/2) * Math.sin(Δλ/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-      return R * c; // 미터 단위 거리
+    if (response.data.isSuccess) {
+      courses.value = response.data.result.content;
+      totalPages.value = response.data.result.totalPages;
+    } else {
+      error.value = '데이터를 불러오는데 실패했습니다.';
     }
-  },
-  async mounted() {
-    try {
-      await this.initializeKakaoMap();
-      await this.fetchGpxData();
-    } catch (error) {
-      console.error('지도 초기화 오류:', error);
-      this.error = '지도를 불러오는데 실패했습니다.';
-    }
-  },
-  beforeUnmount() {
-    if (this.path) {
-      this.path.setMap(null);
-    }
+  } catch (err) {
+    error.value = '서버 오류가 발생했습니다.';
+    console.error('Error fetching courses:', err);
+  } finally {
+    loading.value = false;
   }
-}
+};
+
+// 페이지 변경 처리
+const handlePageChange = (page) => {
+  currentPage.value = page;
+  fetchCourses(page);
+};
+
+// 상세 정보 보기
+const viewCourseDetail = (courseId) => {
+  router.push(`/courses/${courseId}`);
+};
+
+// 초기 데이터 로드
+onMounted(() => {
+  fetchCourses();
+});
 </script>
 
 <style scoped>
-.map-container {
-  position: relative;
-  width: 100%;
-  margin: 20px 0;
+.gap-2 {
+  gap: 8px;
 }
 
-.loading-indicator {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
+.v-card {
+  transition: transform 0.2s;
+}
+
+.v-card:hover {
+  transform: translateY(-4px);
+}
+
+/* HTML 컨텐츠 스타일링 */
+:deep(br) {
+  margin-bottom: 0.5rem;
 }
 </style>

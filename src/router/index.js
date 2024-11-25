@@ -1,12 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { getToken, TOKEN_TYPE } from "@/util/auth";
 import HomePage from "../views/HomePage.vue";
+import CourseList from '@/components/course/CourseList.vue';
+import CourseDetail from '@/components/course/CourseDetail.vue';
 
 const routes = [
   {
     path: "/",
     name: "Home",
     component: HomePage,
+  },
+  {
+    path: '/courses/:id',
+    name: 'CourseDetail',
+    component: CourseDetail
   },
   {
     path: "/signup",
@@ -42,16 +49,10 @@ const routes = [
     component: () => import("../components/board/BoardModify.vue"),
     meta: { requiresAuth: true }
   },
-  // 수정된 경로
   {
     path: '/search',
     name: 'CourseSearch',
     component: () => import("../components/course/CourseSearch.vue")
-  },
-  {
-    path: '/detail',
-    name: 'CourseDetail',
-    component: () => import("../components/course/CourseDetail.vue")
   },
   {
     path: '/nearby',
@@ -73,6 +74,11 @@ const routes = [
     path: '/recommend',
     name: 'CourseRecommend',
     component: () => import("../components/course/CourseRecommend.vue")
+  },
+  {
+    path: '/travel',
+    name: 'CourseList',
+    component: CourseList,
   }
 ];
 
