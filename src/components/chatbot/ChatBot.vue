@@ -57,7 +57,7 @@
 
 <script setup>
 /* eslint-disable no-unused-vars */
-import { ref, onMounted, nextTick, watch } from "vue";
+import { ref, nextTick, watch } from "vue";
 import axios from "axios";
 
 const isChatOpen = ref(false);

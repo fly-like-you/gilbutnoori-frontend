@@ -23,21 +23,21 @@ export default {
     const currentUser = computed(() => memberStore.userInfo);
 
     const handleProtectedRoute = (route) => {
-  if (!isAuthenticated.value) {
-    showSnackbar({
-      text: '로그인이 필요한 서비스입니다.',
-      color: 'warning',
-    });
-    router.push('/login');
-  } else {
-    // 경로가 '/board'인 경우 name을 사용하여 라우팅
-    if (route === '/board') {
-      router.push({ name: 'Board' });
-    } else {
-      router.push(route);
-    }
-  }
-};
+      if (!isAuthenticated.value) {
+        showSnackbar({
+          text: "로그인이 필요한 서비스입니다.",
+          color: "warning",
+        });
+        router.push("/login");
+      } else {
+        // 경로가 '/board'인 경우 name을 사용하여 라우팅
+        if (route === "/board") {
+          router.push({ name: "BoardList" });
+        } else {
+          router.push(route);
+        }
+      }
+    };
 
     const handleLogout = async () => {
       try {
@@ -123,10 +123,7 @@ export default {
           <template v-slot:activator="{ props }">
             <v-btn icon v-bind="props" size="large">
               <v-avatar color="primary" size="32">
-                <v-img
-                  src="https://cdn.vuetifyjs.com/images/john.jpg"
-                  alt="User"
-                ></v-img>
+                <v-img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="User"></v-img>
               </v-avatar>
             </v-btn>
           </template>
