@@ -15,6 +15,10 @@
                     height="200"
                   ></v-img>
                   <v-card-title>{{ plan?.attraction?.title }}</v-card-title>
+                  <div class="d-flex align-center">
+                    <v-icon size="small" color="primary" class="me-1"> mdi-map-marker </v-icon>
+                    <span class="text-body-2">{{ plan.attraction.addr1 }}</span>
+                  </div>
                 </v-card>
               </template>
               <template v-else-if="plan.course">
