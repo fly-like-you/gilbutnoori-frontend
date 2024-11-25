@@ -125,30 +125,8 @@ onMounted(() => {
 });
 </script>
 
-<template>
+<te mplate>
   <div>
-    <v-carousel
-      v-model="selectedRouteType"
-      :show-arrows="true"
-      hide-delimiter-background
-      height="100"
-      hide-delimiters
-      class="course-type-carousel"
-    >
-      <template v-slot:prev="{ props }">
-        <v-btn variant="plain" color="primary" v-bind="props" icon="mdi-chevron-left" size="large"></v-btn>
-      </template>
-      <template v-slot:next="{ props }">
-        <v-btn variant="plain" color="primary" v-bind="props" icon="mdi-chevron-right" size="large"></v-btn>
-      </template>
-
-      <v-carousel-item v-for="(type, i) in routeTypes" :key="i">
-        <div class="d-flex justify-center align-center fill-height">
-          <h2 class="text-h4 font-weight-bold">{{ type.title }}</h2>
-        </div>
-      </v-carousel-item>
-    </v-carousel>
-
     <v-container class="py-8">
       <v-row>
         <v-col cols="12" class="mb-4">
@@ -195,7 +173,13 @@ onMounted(() => {
               <v-col v-for="course in courses" :key="course.id" cols="12" sm="6" lg="4">
                 <v-card class="h-100" hover>
                   <v-img height="200" :src="getRandomImage(course.id)" class="bg-grey-lighten-2" cover>
-                    <v-chip class="ma-2" :color="getLevelColor(course.level)" label text-color="white">
+                    <v-chip
+                      class="ma-2"
+                      :color="getLevelColor(course.level)"
+                      variant="elevated"
+                      label
+                      text-color="white"
+                    >
                       난이도 {{ course.level }}
                     </v-chip>
                   </v-img>
@@ -209,9 +193,6 @@ onMounted(() => {
                       <v-chip size="small" color="primary" label> {{ course.dist }}km </v-chip>
                       <v-chip size="small" color="secondary" label>
                         {{ formatTime(course.turnaround) }}
-                      </v-chip>
-                      <v-chip size="small" label>
-                        {{ course.cycle }}
                       </v-chip>
                     </div>
 
@@ -252,7 +233,7 @@ onMounted(() => {
       </v-dialog>
     </v-container>
   </div>
-</template>
+</te>
 
 <style scoped>
 .course-type-carousel {

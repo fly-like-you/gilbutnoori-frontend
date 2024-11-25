@@ -30,6 +30,7 @@
       <RouteExplorer />
       <!--코스 찾기 캐러셀 섹션-->
       <CourseExplorer></CourseExplorer>
+      <ChatBot></ChatBot>
 
       <!-- 통계 섹션 -->
       <!-- <StatusSection /> -->
@@ -44,7 +45,7 @@
 import PostCarousel from "@/components/board/PostCarousel.vue";
 import CourseExplorer from "@/components/course/CourseExplorer.vue";
 import RouteExplorer from "@/components/route/RouteExplorer.vue";
-
+import ChatBot from "@/components/chatbot/ChatBot.vue";
 // import StatusSection from '@/components/home/StatusSection.vue';
 // import FeaturesSection from '@/components/home/FeaturesSection.vue';
 
@@ -54,6 +55,7 @@ export default {
     PostCarousel,
     CourseExplorer,
     RouteExplorer,
+    ChatBot,
     // StatusSection,
     // FeaturesSection,
   },

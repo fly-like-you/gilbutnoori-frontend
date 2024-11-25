@@ -38,7 +38,9 @@
 
       <v-row v-if="!loading && !error">
         <v-col cols="12" class="mb-4">
-          <h3 class="text-h5 font-weight-bold">{{ currentRoute?.name || "코스 목록" }}</h3>
+          <h3 class="text-h5 font-weight-bold">
+            {{ currentRoute?.name || "코스 목록" }}
+          </h3>
         </v-col>
       </v-row>
 
@@ -46,7 +48,7 @@
         <v-slide-group-item v-for="course in courses" :key="course.id">
           <v-card class="ma-4" width="300" @click="selectCourse(course)">
             <v-img :src="getRandomImage(course.id)" height="200" cover>
-              <v-chip class="ma-2" :color="getLevelColor(course.level)" label text-color="white">
+              <v-chip class="ma-2" :color="getLevelColor(course.level)" variant="elevated" label text-color="white">
                 난이도 {{ course.level }}
               </v-chip>
             </v-img>
