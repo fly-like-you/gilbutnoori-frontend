@@ -223,8 +223,8 @@ const fetchTravels = async () => {
         travels.value = response.data.result.travels;
       }
     },
-    () => {
-      showSnackbar('여행 목록을 불러오는데 실패했습니다.', 'error');
+    (error) => {
+      showSnackbar("여행 목록을 불러오는데 실패했습니다.", error);
     }
   );
 };
