@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { listRoutes } from "@/api/route";
 import router from "@/router";
 
@@ -7,17 +7,14 @@ import router from "@/router";
 const routes = ref([]);
 const selectedRoute = ref(null);
 const showCourses = ref(false);
+
+// 페이지네이션 관련 상태 관리
 const currentPage = ref(1);
 const totalPages = ref(0);
+const totalElements = ref(0);
+const pageSize = 20;
 const courses = ref([]);
-
-// 둘레길 선택
-const viewCourseDetail = (route) => {
-  selectedRoute.value = route;
-  showCourses.value = true;
-  currentPage.value = 1;
-  fetchCourses(route);
-};
+const loadingCourses = ref(false);
 
 // API 요청 함수
 const fetchRoutes = async () => {
@@ -54,10 +51,13 @@ const selectRoute = (route) => {
 };
 
 // 코스 목록 가져오기
-const fetchCourses = async (route) => {
-  console.log("fetchCourses", route);
+// 코스 목록 가져오기 함수 수정
+const fetchCourses = async (page = 1) => {
   try {
-    const response = await fetch(`http://localhost:8080/courses/search?routeId=${route.id}`);
+    loadingCourses.value = true;
+    const response = await fetch(
+      `http://localhost:8080/courses/search?routeId=${selectedRoute.value.id}&size=${pageSize}&page=${page - 1}`
+    );
 
     if (!response.ok) {
       throw new Error("코스 데이터를 불러오는데 실패했습니다.");
@@ -67,16 +67,16 @@ const fetchCourses = async (route) => {
 
     if (data.isSuccess) {
       courses.value = data.result.courses;
-
       totalPages.value = data.result.totalPages;
-      console.log("courses -> ", courses);
-      console.log("totalPages -> ", totalPages);
+      totalElements.value = data.result.totalElements;
     } else {
       throw new Error(data.message || "데이터 형식이 올바르지 않습니다.");
     }
   } catch (error) {
     console.error("코스 API 요청 오류:", error);
     error.value = error.message;
+  } finally {
+    loadingCourses.value = false;
   }
 };
 
@@ -101,7 +101,25 @@ const getLevelColor = (level) => {
   };
   return colors[level] || "grey";
 };
-// 생명주기 훅
+// 페이지 변경 핸들러
+const handlePageChange = (page) => {
+  currentPage.value = page;
+  fetchCourses(page);
+};
+
+// currentPage 변경 감지
+watch(currentPage, (newPage) => {
+  fetchCourses(newPage);
+});
+
+// 둘레길 선택시 코스 목록 초기화
+const viewCourseDetail = (route) => {
+  selectedRoute.value = route;
+  showCourses.value = true;
+  currentPage.value = 1; // 페이지 초기화
+  fetchCourses(1); // 첫 페이지 데이터 로드
+};
+
 onMounted(() => {
   fetchRoutes();
 });
@@ -151,7 +169,7 @@ onMounted(() => {
               </div>
               <div class="text-body-2 text-grey">{{ route.summary }}</div>
             </v-card-text>
-            <v-btn color="primary" variant="text" @click.stop="viewCourseDetail(route)"> 상세 보기 </v-btn>
+            <v-btn color="primary" variant="text" @click.stop="viewCourseDetail(route)"> 관련 코스 둘러보기 </v-btn>
           </v-card>
         </v-slide-group-item>
       </v-slide-group>
@@ -218,7 +236,7 @@ onMounted(() => {
             <!-- 코스가 없을 경우 -->
             <v-alert v-else type="info" class="mt-4"> 현재 등록된 코스가 없습니다. </v-alert>
 
-            <!-- 페이지네이션 -->
+            <!-- 수정된 페이지네이션 부분 -->
             <div class="d-flex justify-center mt-6">
               <v-pagination
                 v-if="totalPages > 1"
@@ -226,6 +244,7 @@ onMounted(() => {
                 :length="totalPages"
                 :total-visible="7"
                 @update:model-value="handlePageChange"
+                class="my-4"
               ></v-pagination>
             </div>
           </v-container>
