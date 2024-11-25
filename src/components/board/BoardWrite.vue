@@ -11,7 +11,7 @@
               <v-row no-gutters>
                 <v-col cols="12">
                   <v-icon class="mr-2">mdi-map-marker-path</v-icon>
-                  {{ selectedTravel ? selectedTravel.title : "여행 선택하기" }}
+                  {{ selectedTravel ? selectedTravel.title : '여행 선택하기' }}
                 </v-col>
               </v-row>
             </v-expansion-panel-title>
@@ -83,7 +83,7 @@
                     <template v-else-if="plan.course">
                       <v-card class="elevation-1 mt-4">
                         <v-card-text>
-                          <div class="text-h6 mb-1">{{ plan.course.name || "코스" }}</div>
+                          <div class="text-h6 mb-1">{{ plan.course.name || '코스' }}</div>
                           <v-chip size="small" color="secondary" class="mr-2"> 코스 </v-chip>
                         </v-card-text>
                       </v-card>
@@ -179,10 +179,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
-import { useRouter } from "vue-router";
-import { registArticle } from "@/api/board";
-import { listTravels } from "@/api/travel";
+import { ref, computed, onMounted, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import { registArticle } from '@/api/board';
+import { listTravels } from '@/api/travel';
 
 // 라우터 설정
 const router = useRouter();
@@ -191,15 +191,15 @@ const router = useRouter();
 const form = ref(null);
 const travels = ref([]);
 const selectedTravel = ref(null);
-const title = ref("");
-const content = ref("");
+const title = ref('');
+const content = ref('');
 const images = ref([]);
 const imagePreviewUrls = ref([]);
 const loading = ref(false);
 const snackbar = ref({
   show: false,
-  text: "",
-  color: "success",
+  text: '',
+  color: 'success',
 });
 
 // 정렬된 여행 계획 computed 속성
@@ -232,7 +232,7 @@ const fetchTravels = async () => {
 // 여행 선택
 const selectTravel = (travel) => {
   selectedTravel.value = travel;
-  console.log("Selected travel plans:", travel.plans.planResult);
+  console.log('Selected travel plans:', travel.plans.planResult);
 };
 
 // 이미지 미리보기 생성
@@ -262,21 +262,21 @@ const submitBoard = async () => {
   registArticle(
     formData,
     () => {
-      showSnackbar("후기가 성공적으로 등록되었습니다.");
-      router.push({ name: "BoardList" }); // 게시글 목록으로 이동
+      showSnackbar('후기가 성공적으로 등록되었습니다.');
+      router.push({ name: 'BoardList' }); // 게시글 목록으로 이동
     },
     (error) => {
-      showSnackbar("후기 등록에 실패했습니다.", error);
+      showSnackbar('후기 등록에 실패했습니다.', error);
     }
   );
 };
 
 // 유틸리티 함수
 const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("ko-KR");
+  return new Date(dateString).toLocaleDateString('ko-KR');
 };
 
-const showSnackbar = (text, color = "success") => {
+const showSnackbar = (text, color = 'success') => {
   snackbar.value = {
     show: true,
     text,
