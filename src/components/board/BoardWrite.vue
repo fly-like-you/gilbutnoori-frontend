@@ -59,11 +59,7 @@
                       <v-card class="mt-4">
                         <v-row no-gutters>
                           <v-col cols="12" md="4" v-if="plan.attraction.firstImage1">
-                            <v-img
-                              :src="plan.attraction.firstImage1"
-                              height="200"
-                              cover
-                            ></v-img>
+                            <v-img :src="plan.attraction.firstImage1" height="200" cover></v-img>
                           </v-col>
                           <v-col cols="12" :md="plan.attraction.firstImage1 ? 8 : 12">
                             <v-card-text>
@@ -88,9 +84,7 @@
                       <v-card class="elevation-1 mt-4">
                         <v-card-text>
                           <div class="text-h6 mb-1">{{ plan.course.name || "코스" }}</div>
-                          <v-chip size="small" color="secondary" class="mr-2">
-                            코스
-                          </v-chip>
+                          <v-chip size="small" color="secondary" class="mr-2"> 코스 </v-chip>
                         </v-card-text>
                       </v-card>
                     </template>
@@ -132,13 +126,18 @@
                   class="mb-4"
                   :show-size="true"
                   chips
+                  :rules="[
+                    (files) => !files || files.length <= 5 || '최대 5개까지 업로드 가능합니다',
+                    (files) =>
+                      !files ||
+                      !Array.from(files).find((file) => file.size > 5000000) ||
+                      '파일 크기는 5MB 이하여야 합니다',
+                  ]"
                 >
                   <template v-slot:selection="{ fileNames }">
-                    <template v-for="fileName in fileNames" :key="fileName">
-                      <v-chip size="small" class="mr-2">
-                        {{ fileName }}
-                      </v-chip>
-                    </template>
+                    <v-chip v-for="fileName in fileNames" :key="fileName" size="small" class="mr-2">
+                      {{ fileName }}
+                    </v-chip>
                   </template>
                 </v-file-input>
 
@@ -168,12 +167,7 @@
                 <v-card-actions class="pt-4">
                   <v-spacer></v-spacer>
                   <v-btn color="grey" variant="outlined" @click="cancel">취소</v-btn>
-                  <v-btn
-                    color="primary"
-                    :loading="loading"
-                    :disabled="!isFormValid"
-                    type="submit"
-                  >
+                  <v-btn color="primary" :loading="loading" :disabled="!isFormValid" type="submit">
                     등록
                   </v-btn>
                 </v-card-actions>
@@ -186,10 +180,7 @@
         <v-row v-else>
           <v-col cols="12">
             <v-card class="pa-6">
-              <v-alert
-                type="info"
-                text="여행을 선택하면 후기를 작성할 수 있습니다."
-              ></v-alert>
+              <v-alert type="info" text="여행을 선택하면 후기를 작성할 수 있습니다."></v-alert>
             </v-card>
           </v-col>
         </v-row>
@@ -208,6 +199,7 @@ import { ref, computed, onMounted, watch } from "vue";
 import { useRouter } from "vue-router";
 import { registArticle } from "@/api/board";
 import { listTravels } from "@/api/travel";
+import axios from "axios";
 
 // 라우터 설정
 const router = useRouter();
@@ -231,9 +223,7 @@ const snackbar = ref({
 const sortedPlans = computed(() => {
   if (!selectedTravel.value?.plans?.planResult) return [];
 
-  return [...selectedTravel.value.plans.planResult].sort(
-    (a, b) => a.sequence - b.sequence
-  );
+  return [...selectedTravel.value.plans.planResult].sort((a, b) => a.sequence - b.sequence);
 });
 
 // 폼 유효성 검사
@@ -288,9 +278,15 @@ const submitBoard = async () => {
 
   registArticle(
     formData,
-    () => {
+    async (response) => {
+      console.log(images.value);
+      console.log(response.data.result.id);
+      if (response.data.isSuccess && images.value?.length > 0) {
+        const boardId = response.data.result.id;
+        await uploadImages(boardId);
+      }
       showSnackbar("후기가 성공적으로 등록되었습니다.");
-      router.push({ name: "BoardList" }); // 게시글 목록으로 이동
+      router.push({ name: "BoardList" });
     },
     (error) => {
       console.log(error);
@@ -298,7 +294,25 @@ const submitBoard = async () => {
     }
   );
 };
+const uploadImages = async (boardId) => {
+  console.log("uploadImages", boardId);
+  try {
+    for (const file of Array.from(images.value)) {
+      const formData = new FormData();
+      formData.append("boardId", boardId);
+      formData.append("file", file);
 
+      await axios.post("http://localhost:8080/files/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+    }
+  } catch (error) {
+    console.error("이미지 업로드 실패:", error);
+    showSnackbar("이미지 업로드에 실패했습니다.", "error");
+  }
+};
 // 유틸리티 함수
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("ko-KR");
