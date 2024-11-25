@@ -21,6 +21,7 @@
     "tinymce": "^7.5.1",
     "vue": "^3.2.13",
     "vue-router": "^4.4.5",
+    "vue3-kakao-maps": "^2.3.10",
     "vuedraggable": "^2.24.3",
     "vuetify": "^3.7.4",
     "vuex": "^4.1.0",

@@ -34,9 +34,9 @@ function detailArticle(id, success, fail) {
 // 게시글 등록
 function registArticle(article, success, fail) {
   const token = getToken(TOKEN_TYPE.ACCESS);
-  console.log("게시글 등록 요청 보낼게요 -> ", JSON.parse(JSON.stringify(article)));
+  console.log("게시글 등록 요청 보낼게요 -> ", article);
   local
-    .post(`/boards`, JSON.parse(JSON.stringify(article)), {
+    .post(`/boards`, article, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -84,11 +84,4 @@ function deleteArticle(id, success, fail) {
     .catch(fail);
 }
 
-export {
-  listArticle,
-  detailArticle,
-  registArticle,
-  getModifyArticle,
-  modifyArticle,
-  deleteArticle,
-};
+export { listArticle, detailArticle, registArticle, getModifyArticle, modifyArticle, deleteArticle };

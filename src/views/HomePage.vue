@@ -27,7 +27,7 @@
       </v-container>
       <!--캐러셀 섹션-->
       <PostCarousel />
-
+      <RouteExplorer />
       <!--코스 찾기 캐러셀 섹션-->
       <CourseExplorer></CourseExplorer>
 
@@ -41,23 +41,25 @@
 </template>
 
 <script>
-import PostCarousel from '@/components/board/PostCarousel.vue';
-import CourseExplorer from '@/components/course/CourseExplorer.vue';
+import PostCarousel from "@/components/board/PostCarousel.vue";
+import CourseExplorer from "@/components/course/CourseExplorer.vue";
+import RouteExplorer from "@/components/route/RouteExplorer.vue";
 
 // import StatusSection from '@/components/home/StatusSection.vue';
 // import FeaturesSection from '@/components/home/FeaturesSection.vue';
 
 export default {
-  name: 'HomePage',
+  name: "HomePage",
   components: {
     PostCarousel,
     CourseExplorer,
+    RouteExplorer,
     // StatusSection,
     // FeaturesSection,
   },
   methods: {
     getStarted() {
-      this.$router.push('/travel');
+      this.$router.push("/travel");
     },
   },
 };
