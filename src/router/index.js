@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { getToken, TOKEN_TYPE } from "@/util/auth";
 import HomePage from "../views/HomePage.vue";
+import CourseRecommend from '../views/CourseRecommend.vue';  // 경로 수정
 
 import RouteDetail from "@/components/route/RouteDetail.vue";
 import CourseList from "@/components/course/CourseList.vue";
@@ -16,6 +17,11 @@ const routes = [
     path: "/courses/:id",
     name: "CourseDetail",
     component: CourseDetail,
+  },
+  {
+    path: '/recommend',
+    name: 'CourseRecommend',
+    component: CourseRecommend
   },
   {
     path: "/signup",
@@ -77,7 +83,7 @@ const routes = [
   {
     path: "/recommend",
     name: "CourseRecommend",
-    component: () => import("../components/course/CourseRecommend.vue"),
+    component: () => import("../views/CourseRecommend.vue"),
   },
   {
     path: "/travel",

@@ -1,4 +1,5 @@
 <!-- Chatbot.vue -->
+ 
 <template>
   <div class="chatbot-container">
     <!-- 챗봇 토글 버튼 -->
@@ -55,6 +56,7 @@
 </template>
 
 <script setup>
+/* eslint-disable no-unused-vars */
 import { ref, onMounted, nextTick, watch } from "vue";
 import axios from "axios";
 

@@ -1,4 +1,5 @@
 <script setup>
+/* eslint-disable no-unused-vars */
 import { ref, onMounted, watch } from "vue";
 import { listRoutes } from "@/api/route";
 import router from "@/router";
@@ -125,7 +126,7 @@ onMounted(() => {
 });
 </script>
 
-<te mplate>
+<template>
   <div>
     <v-container class="py-8">
       <v-row>
@@ -233,7 +234,7 @@ onMounted(() => {
       </v-dialog>
     </v-container>
   </div>
-</te>
+</template>
 
 <style scoped>
 .course-type-carousel {
