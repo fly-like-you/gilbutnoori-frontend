@@ -15,19 +15,9 @@
       <v-col v-for="course in courses" :key="course.id" cols="12" sm="6" lg="4">
         <v-card class="h-100" hover>
           <!-- 카드 이미지 -->
-          <v-img
-            height="200"
-            :src="getRandomImage(course.id)"
-            class="bg-grey-lighten-2"
-            cover
-          >
+          <v-img height="200" :src="getRandomImage(course.id)" class="bg-grey-lighten-2" cover>
             <!-- 난이도 뱃지 -->
-            <v-chip
-              class="ma-2"
-              :color="getLevelColor(course.level)"
-              label
-              text-color="white"
-            >
+            <v-chip class="ma-2" :color="getLevelColor(course.level)" label text-color="white">
               난이도 {{ course.level }}
             </v-chip>
           </v-img>
@@ -39,24 +29,11 @@
           <v-card-text>
             <!-- 기본 정보 칩 -->
             <div class="d-flex flex-wrap gap-2 mb-4">
-              <v-chip
-                size="small"
-                color="primary"
-                label
-              >
-                {{ course.dist }}km
-              </v-chip>
-              <v-chip
-                size="small"
-                color="secondary"
-                label
-              >
+              <v-chip size="small" color="primary" label> {{ course.dist }}km </v-chip>
+              <v-chip size="small" color="secondary" label>
                 {{ formatTime(course.turnaround) }}
               </v-chip>
-              <v-chip
-                size="small"
-                label
-              >
+              <v-chip size="small" label>
                 {{ course.cycle }}
               </v-chip>
             </div>
@@ -66,9 +43,7 @@
 
             <!-- 위치 정보 -->
             <div class="d-flex align-center">
-              <v-icon size="small" color="primary" class="me-1">
-                mdi-map-marker
-              </v-icon>
+              <v-icon size="small" color="primary" class="me-1"> mdi-map-marker </v-icon>
               <span class="text-body-2">{{ course.sigun }}</span>
             </div>
           </v-card-text>
@@ -77,13 +52,7 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="primary"
-              variant="text"
-              @click="viewCourseDetail(course.id)"
-            >
-              상세 보기
-            </v-btn>
+            <v-btn color="primary" variant="text" @click="viewCourseDetail(course.id)"> 상세 보기 </v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -103,9 +72,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
 const router = useRouter();
 const courses = ref([]);
@@ -118,17 +87,17 @@ const itemsPerPage = 9; // 페이지당 보여줄 항목 수
 // 난이도별 색상
 const getLevelColor = (level) => {
   const colors = {
-    1: 'success',
-    2: 'info',
-    3: 'warning',
-    4: 'error'
+    1: "success",
+    2: "info",
+    3: "warning",
+    4: "error",
   };
-  return colors[level] || 'grey';
+  return colors[level] || "grey";
 };
 
 // 시간 포맷팅
 const formatTime = (minutes) => {
-  if (!minutes) return '정보 없음';
+  if (!minutes) return "정보 없음";
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
   return `${hours}시간 ${mins}분`;
@@ -143,23 +112,23 @@ const getRandomImage = (id) => {
 const fetchCourses = async (page = 1) => {
   loading.value = true;
   try {
-    const response = await axios.get(`http://localhost:8080/courses`, {
+    const response = await axios.get(`http://localhost:8080/routes`, {
       params: {
         page: page - 1, // 백엔드는 0-based pagination
         size: itemsPerPage,
-        sort: 'id,desc'
-      }
+        sort: "id,desc",
+      },
     });
 
     if (response.data.isSuccess) {
       courses.value = response.data.result.content;
       totalPages.value = response.data.result.totalPages;
     } else {
-      error.value = '데이터를 불러오는데 실패했습니다.';
+      error.value = "데이터를 불러오는데 실패했습니다.";
     }
   } catch (err) {
-    error.value = '서버 오류가 발생했습니다.';
-    console.error('Error fetching courses:', err);
+    error.value = "서버 오류가 발생했습니다.";
+    console.error("Error fetching courses:", err);
   } finally {
     loading.value = false;
   }
@@ -178,6 +147,7 @@ const viewCourseDetail = (courseId) => {
 
 // 초기 데이터 로드
 onMounted(() => {
+  console.log("fetchCourse");
   fetchCourses();
 });
 </script>

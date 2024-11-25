@@ -3,9 +3,8 @@ import { getToken, TOKEN_TYPE } from "@/util/auth";
 import HomePage from "../views/HomePage.vue";
 
 import RouteDetail from "@/components/route/RouteDetail.vue";
-import CourseList from '@/components/course/CourseList.vue';
-import CourseDetail from '@/components/course/CourseDetail.vue';
-
+import CourseList from "@/components/course/CourseList.vue";
+import CourseDetail from "@/components/course/CourseDetail.vue";
 
 const routes = [
   {
@@ -14,9 +13,9 @@ const routes = [
     component: HomePage,
   },
   {
-    path: '/courses/:id',
-    name: 'CourseDetail',
-    component: CourseDetail
+    path: "/courses/:id",
+    name: "CourseDetail",
+    component: CourseDetail,
   },
   {
     path: "/signup",
@@ -29,10 +28,11 @@ const routes = [
     component: () => import("../components/login/AppLogin.vue"),
   },
   {
-    path: "/routes/:id",
+    path: "/routes/detail/:id",
     name: "RouteDetail",
     component: RouteDetail,
   },
+
   {
     path: "/board",
     name: "Board",
@@ -57,16 +57,7 @@ const routes = [
     component: () => import("../components/board/BoardModify.vue"),
     meta: { requiresAuth: true },
   },
-  {
-    path: "/search",
-    name: "CourseSearch",
-    component: () => import("../components/course/CourseSearch.vue"),
-  },
-  {
-    path: "/detail",
-    name: "CourseDetail",
-    component: () => import("../components/course/CourseDetail.vue"),
-  },
+
   {
     path: "/nearby",
     name: "NearbyCourse",
@@ -84,16 +75,15 @@ const routes = [
     meta: { requiresAuth: true },
   },
   {
-
-    path: '/recommend',
-    name: 'CourseRecommend',
-    component: () => import("../components/course/CourseRecommend.vue")
+    path: "/recommend",
+    name: "CourseRecommend",
+    component: () => import("../components/course/CourseRecommend.vue"),
   },
   {
-    path: '/travel',
-    name: 'CourseList',
+    path: "/travel",
+    name: "CourseList",
     component: CourseList,
-  }
+  },
 ];
 
 const router = createRouter({
