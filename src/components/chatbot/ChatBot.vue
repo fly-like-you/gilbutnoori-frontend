@@ -55,7 +55,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from "vue";
+import { ref, nextTick, watch } from "vue";
 import axios from "axios";
 
 const isChatOpen = ref(false);

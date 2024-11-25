@@ -125,7 +125,7 @@ onMounted(() => {
 });
 </script>
 
-<te mplate>
+<template>
   <div>
     <v-container class="py-8">
       <v-row>
@@ -233,7 +233,7 @@ onMounted(() => {
       </v-dialog>
     </v-container>
   </div>
-</te>
+</template>
 
 <style scoped>
 .course-type-carousel {

@@ -36,8 +36,9 @@ export const useMemberStore = defineStore("memberStore", () => {
       const response = await local.post(`/user/login`, loginUser);
       if (response.status === httpStatusCode.OK || response.status === httpStatusCode.CREATE) {
         const { data } = response;
-        setToken(TOKEN_TYPE.ACCESS, data["access-token"]);
-        setToken(TOKEN_TYPE.REFRESH, data["refresh-token"]);
+        console.log("login successed response -> ", data);
+        setToken(TOKEN_TYPE.ACCESS, data.result.accessToken);
+        setToken(TOKEN_TYPE.REFRESH, data.result.refreshToken);
         isLogin.value = true;
         isLoginError.value = false;
         isValidToken.value = true;
