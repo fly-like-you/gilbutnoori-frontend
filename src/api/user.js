@@ -12,11 +12,10 @@ export const userApi = {
 
   async login(loginData) {
     const response = await local.post(`/user/login`, loginData);
-    if (response.data.result.accessToken && response.data.result.refreshToken) {
+    if (response.data.accessToken && response.data.refreshToken) {
       setToken(TOKEN_TYPE.ACCESS, response.data.accessToken);
       setToken(TOKEN_TYPE.REFRESH, response.data.refreshToken);
     }
-    console.log(response.data);
     return response.data;
   },
 
@@ -37,5 +36,5 @@ export const userApi = {
       setToken(TOKEN_TYPE.ACCESS, response.data.accessToken);
     }
     return response.data;
-  },
+  }
 };
