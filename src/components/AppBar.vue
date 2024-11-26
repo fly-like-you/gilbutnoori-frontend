@@ -30,12 +30,9 @@ export default {
         });
         router.push("/login");
       } else {
-        // 경로가 '/board'인 경우 name을 사용하여 라우팅
-        if (route === "/board") {
-          router.push({ name: "BoardList" });
-        } else {
-          router.push(route);
-        }
+        router.push({
+          name: route,
+        });
       }
     };
 
@@ -79,26 +76,26 @@ export default {
 
       <!-- 메인 네비게이션 -->
       <v-toolbar-items class="d-none d-md-flex">
-        <v-btn text class="mx-2" @click="() => handleProtectedRoute('/travel')">
+        <v-btn text class="mx-2" @click="() => handleProtectedRoute('CourseList')">
           <v-icon start>mdi-airplane</v-icon>
+          여행 계획하기
+        </v-btn>
+
+        <v-btn v-if="isAuthenticated" text class="mx-2" @click="() => handleProtectedRoute('AttractionMap')">
+          <v-icon start>mdi-calendar</v-icon>
           여행지
         </v-btn>
 
-        <v-btn text class="mx-2" @click="() => handleProtectedRoute('/support')">
-          <v-icon start>mdi-help-circle</v-icon>
-          고객지원
-        </v-btn>
-
-        <v-btn v-if="isAuthenticated" text class="mx-2" to="/plan">
-          <v-icon start>mdi-calendar</v-icon>
-          여행계획하기
-        </v-btn>
-
-        <v-btn text class="mx-2" @click="() => handleProtectedRoute('/board')">
+        <v-btn text class="mx-2" @click="() => handleProtectedRoute('BoardList')">
           <v-icon start>mdi-post</v-icon>
           게시판
         </v-btn>
       </v-toolbar-items>
+
+      <v-btn text class="mx-2" @click="() => handleProtectedRoute('SupportPage')">
+        <v-icon start>mdi-help-circle</v-icon>
+        고객지원
+      </v-btn>
 
       <!-- 비로그인 상태 -->
       <template v-if="!isAuthenticated">
@@ -114,12 +111,7 @@ export default {
 
       <!-- 로그인 상태 -->
       <template v-else>
-        <v-menu
-          v-model="menu"
-          :close-on-content-click="false"
-          location="bottom end"
-          offset="5"
-        >
+        <v-menu v-model="menu" :close-on-content-click="false" location="bottom end" offset="5">
           <template v-slot:activator="{ props }">
             <v-btn icon v-bind="props" size="large">
               <v-avatar color="primary" size="32">

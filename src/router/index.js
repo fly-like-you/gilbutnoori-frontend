@@ -6,6 +6,8 @@ import CourseRecommend from "../views/CourseRecommend.vue"; // 경로 수정
 import RouteDetail from "@/components/route/RouteDetail.vue";
 import CourseList from "@/components/course/CourseList.vue";
 import CourseDetail from "@/components/course/CourseDetail.vue";
+import AttractionMap from "@/components/attraction/AttractionMap.vue";
+import SupportPage from "@/views/SupportPage.vue";
 
 const routes = [
   {
@@ -22,6 +24,16 @@ const routes = [
     path: "/recommend",
     name: "CourseRecommend",
     component: CourseRecommend,
+  },
+  {
+    path: "/attraction",
+    name: "AttractionMap",
+    component: AttractionMap,
+  },
+  {
+    path: "/support",
+    name: "SupportPage",
+    componemt: SupportPage,
   },
   {
     path: "/signup",
@@ -68,17 +80,6 @@ const routes = [
     path: "/nearby",
     name: "NearbyCourse",
     component: () => import("../components/course/NearbyCourse.vue"),
-  },
-  {
-    path: "/filter",
-    name: "FilterCourse",
-    component: () => import("../components/course/FilterCourse.vue"),
-  },
-  {
-    path: "/favorites",
-    name: "FavoriteCourse",
-    component: () => import("../components/course/FavoriteCourse.vue"),
-    meta: { requiresAuth: true },
   },
   {
     path: "/recommend",
