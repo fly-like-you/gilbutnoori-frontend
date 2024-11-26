@@ -13,7 +13,6 @@
               둘레길 여행 시작하기
             </v-btn>
           </v-col>
-
           <!-- 이미지 섹션 -->
           <v-col cols="12" md="6" class="d-flex justify-center align-center">
             <v-img
@@ -45,7 +44,6 @@
 import PostCarousel from "@/components/board/PostCarousel.vue";
 import CourseExplorer from "@/components/course/CourseExplorer.vue";
 import RouteExplorer from "@/components/route/RouteExplorer.vue";
-import ChatBot from "@/components/chatbot/ChatBot.vue";
 // import StatusSection from '@/components/home/StatusSection.vue';
 // import FeaturesSection from '@/components/home/FeaturesSection.vue';
 
@@ -55,7 +53,6 @@ export default {
     PostCarousel,
     CourseExplorer,
     RouteExplorer,
-    ChatBot,
     // StatusSection,
     // FeaturesSection,
   },

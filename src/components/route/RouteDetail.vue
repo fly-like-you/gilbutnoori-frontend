@@ -14,7 +14,8 @@
               {{ routeDetail.roadOrBike === "DNWW" ? "도보여행" : "자전거여행" }}
             </v-chip>
             <span class="text-grey">
-              작성일: {{ formatDate(routeDetail.createdAt) }} | 최종 수정일: {{ formatDate(routeDetail.updatedAt) }}
+              작성일: {{ formatDate(routeDetail.createdAt) }} | 최종 수정일:
+              {{ formatDate(routeDetail.updatedAt) }}
             </span>
           </v-card-subtitle>
 
@@ -48,18 +49,45 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { ref, onMounted, watch } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { getRouteDetail } from "@/api/route";
 
+// props 정의는 최상위 레벨에서 해야 합니다
+const props = defineProps({
+  routeId: {
+    type: String,
+    required: false,
+  },
+});
+
 const isLoading = ref(false);
-
-// Router setup
-const route = useRoute();
-const router = useRouter();
-
-// State management
 const routeDetail = ref(null);
+const router = useRouter();
+const route = useRoute();
+const fetchRoute = async (routeId) => {
+  getRouteDetail(
+    routeId,
+    (response) => {
+      console.log(response);
+      if (response.data.isSuccess) {
+        routeDetail.value = response.data.result;
+      }
+    },
+    (error) => {
+      console.error("Error fetching routes:", error);
+    }
+  );
+};
+watch(
+  () => props.routeId,
+  (newId) => {
+    if (newId) {
+      fetchRoute(newId);
+    }
+  },
+  { immediate: true }
+);
 
 // Utility functions
 const formatDate = (dateString) => {
@@ -75,28 +103,23 @@ const goBack = () => {
     name: "Home",
   });
 };
-const fetchRoute = async (routeId) => {
-  getRouteDetail(
-    routeId,
-    (response) => {
-      if (response.data.isSuccess) {
-        routeDetail.value = response.data.result;
-      }
-    },
-    (error) => {
-      console.error("Error fetching routes:", error);
-    }
-  );
-};
+
 // Lifecycle hooks
-onMounted(() => {
-  const routeId = route.params.id;
-  console.log(routeId);
+// onMounted 훅에서는 이미 정의된 props를 사용
+onMounted(async () => {
   isLoading.value = true;
-  if (routeId) {
-    fetchRoute(routeId);
+  try {
+    // props.routeId가 있으면 사용하고, 없으면 route.params.id 사용
+    const routeId = props.routeId || route.params.id;
+    console.log(routeId);
+    if (routeId) {
+      await fetchRoute(routeId);
+    }
+  } catch (error) {
+    console.error("Error in onMounted:", error);
+  } finally {
+    isLoading.value = false;
   }
-  isLoading.value = false;
 });
 </script>
 

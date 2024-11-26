@@ -112,7 +112,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useRoute } from "vue-router";
 import { courseApi } from "@/api/courseApi";
 import GpxMap from "../map/GpxMap.vue";
@@ -121,42 +121,59 @@ const route = useRoute();
 const result = ref(null); // [] 대신 null로 변경
 const isLoading = ref(false);
 
-// 랜덤 이미지 생성 (실제 구현시에는 실제 이미지로 교체)
-// const getRandomImage = (id) => {
-//   return `https://picsum.photos/seed/${id}/500/300`;
-// };
-const courseImages = ref([
-  {
-    src: `https://picsum.photos/1200/800?random=${result.value?.id || 1}`,
-    alt: "코스 이미지 1",
+const props = defineProps({
+  courseId: {
+    type: String,
+    required: false,
   },
-  {
-    src: `https://picsum.photos/1200/800?random=${(result.value?.id || 1) + 1}`,
-    alt: "코스 이미지 2",
-  },
-  {
-    src: `https://picsum.photos/1200/800?random=${(result.value?.id || 1) + 2}`,
-    alt: "코스 이미지 3",
-  },
-]);
-
+});
 const fetchCourses = async (courseId) => {
   isLoading.value = true;
   try {
     const data = await courseApi.getCourseDetail(courseId);
     result.value = data.result;
-    console.log(result.value); // course.value 대신 result.value로 수정
   } catch (error) {
     console.error("Failed to fetch course details:", error);
   } finally {
     isLoading.value = false;
   }
 };
+watch(
+  () => props.courseId,
+  (newId) => {
+    if (newId) {
+      fetchCourses(newId);
+    }
+  },
+  { immediate: true }
+);
+
+// 랜덤 이미지 생성 (실제 구현시에는 실제 이미지로 교체)
+// const getRandomImage = (id) => {
+//   return `https://picsum.photos/seed/${id}/500/300`;
+// };
+const courseImages = ref([]);
+
 // 초기 데이터 로드
-onMounted(() => {
-  const courseId = route.params.id;
-  console.log(courseId);
-  fetchCourses(courseId);
+// onMounted(() => {
+//   const courseId = route.params.id;
+//   console.log(courseId);
+//   fetchCourses(courseId);
+// });
+onMounted(async () => {
+  isLoading.value = true;
+  try {
+    // props.routeId가 있으면 사용하고, 없으면 route.params.id 사용
+    const courseId = props.courseId || route.params.id;
+    console.log(courseId);
+    if (courseId) {
+      await fetchCourses(courseId);
+    }
+  } catch (error) {
+    console.error("Error in onMounted:", error);
+  } finally {
+    isLoading.value = false;
+  }
 });
 </script>
 

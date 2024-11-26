@@ -6,31 +6,15 @@
     <!-- 메인 컨텐츠 -->
     <v-main>
       <!-- 로그인 모달 -->
-      <v-dialog 
-        v-model="isLoginModalOpen" 
-        persistent 
-        max-width="400" 
-        overlay-opacity="0.8"
-      >
+      <v-dialog v-model="isLoginModalOpen" persistent max-width="400" overlay-opacity="0.8">
         <AppLogin @close="closeLoginModal" />
       </v-dialog>
 
       <!-- 라우터 뷰 -->
       <router-view></router-view>
-      <router-link to="/search" class="nav-link">1. 코스 검색 기능 (Search) CourseSearch.vue</router-link>
-  <router-link to="/detail" class="nav-link">2. 코스 상세 조회 기능 (Course Detail) CourseDetail.vue</router-link>
-  <router-link to="/nearby" class="nav-link">3. 위치 기반 가까운 코스 추천 (Nearby Courses) NearbyCourse.vue</router-link>
-  <router-link to="/filter" class="nav-link">4. 코스 필터링 기능 (Filter Courses) FilterCourse.vue</router-link>
-  <router-link to="/favorites" class="nav-link">5. 코스 즐겨찾기 기능 (Favorites) FavoriteCourse.vue</router-link>
-  <router-link to="/recommend" class="nav-link">6. 코스 추천 기능 (Course Recommendation) CourseRecommend.vue</router-link>
-
+      <ChatBot></ChatBot>
       <!-- 스낵바 -->
-      <v-snackbar
-        v-model="snackbar.show"
-        :color="snackbar.color"
-        :timeout="snackbar.timeout"
-        location="top"
-      >
+      <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="snackbar.timeout" location="top">
         {{ snackbar.text }}
 
         <template v-slot:actions>
@@ -40,19 +24,19 @@
     </v-main>
 
     <!-- 푸터 -->
-    <AppFooter />
+    <AppFooter style="z-index: 1" />
   </v-app>
 </template>
 
 <script setup>
-import { ref, provide, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useMemberStore } from '@/store/member';
-import { TOKEN_TYPE } from '@/util/auth';  // TOKEN_TYPE import 추가
-import AppBar from './components/AppBar.vue';
-import AppLogin from './components/login/AppLogin.vue';
-import AppFooter from './components/AppFooter.vue';
-
+import { ref, provide, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { useMemberStore } from "@/store/member";
+import { TOKEN_TYPE } from "@/util/auth"; // TOKEN_TYPE import 추가
+import AppBar from "./components/AppBar.vue";
+import AppLogin from "./components/login/AppLogin.vue";
+import AppFooter from "./components/AppFooter.vue";
+import ChatBot from "@/components/chatbot/ChatBot.vue";
 
 const router = useRouter();
 const memberStore = useMemberStore();
@@ -63,8 +47,8 @@ const isLoginModalOpen = ref(false);
 // 스낵바 상태
 const snackbar = ref({
   show: false,
-  text: '',
-  color: 'success',
+  text: "",
+  color: "success",
   timeout: 3000,
 });
 
@@ -76,16 +60,16 @@ onMounted(async () => {
       const isValid = await memberStore.checkLoginState();
       if (isValid) {
         showSnackbar({
-          text: '자동 로그인되었습니다.',
-          color: 'success'
+          text: "자동 로그인되었습니다.",
+          color: "success",
         });
       }
     }
   } catch (error) {
-    console.error('자동 로그인 실패:', error);
+    console.error("자동 로그인 실패:", error);
     showSnackbar({
-      text: '자동 로그인에 실패했습니다.',
-      color: 'error'
+      text: "자동 로그인에 실패했습니다.",
+      color: "error",
     });
   }
 });
@@ -99,7 +83,7 @@ const closeLoginModal = () => {
 };
 
 // 스낵바 표시 함수
-const showSnackbar = ({ text, color = 'success', timeout = 3000 }) => {
+const showSnackbar = ({ text, color = "success", timeout = 3000 }) => {
   snackbar.value = {
     show: true,
     text,
@@ -109,7 +93,7 @@ const showSnackbar = ({ text, color = 'success', timeout = 3000 }) => {
 };
 
 // provide를 사용하여 하위 컴포넌트에서 스낵바 사용 가능하게 함
-provide('showSnackbar', showSnackbar);
+provide("showSnackbar", showSnackbar);
 
 // 라우트 변경 시 로그인 모달 닫기
 router.afterEach(() => {

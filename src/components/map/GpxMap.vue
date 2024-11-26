@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { KakaoMap, KakaoMapPolyline } from "vue3-kakao-maps";
 import { courseApi } from "@/api/courseApi";
 
@@ -80,7 +80,11 @@ const fetchGPXData = async () => {
     isLoading.value = false;
   }
 };
-
+watch(
+  () => props.courseId,
+  () => fetchGPXData(),
+  { immediate: true }
+);
 onMounted(() => {
   fetchGPXData();
 });

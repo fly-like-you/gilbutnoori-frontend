@@ -66,11 +66,6 @@
               </div>
               <div class="text-body-2 text-grey" v-html="course.summary"></div>
             </v-card-text>
-
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" variant="text" @click="viewCourseDetail(course.id)"> 상세 보기 </v-btn>
-            </v-card-actions>
           </v-card>
         </v-slide-group-item>
       </v-slide-group>
@@ -172,6 +167,7 @@ const handleRouteChange = (index) => {
 // 코스 선택
 const selectCourse = (course) => {
   selectedCard.value = course.id;
+  viewCourseDetail(course.id);
 };
 
 // 코스 상세 보기

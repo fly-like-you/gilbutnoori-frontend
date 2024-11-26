@@ -14,4 +14,24 @@ function listTravels(success, fail) {
     .then(success)
     .catch(fail);
 }
-export { listTravels };
+
+function createTravel(params, success, fail) {
+  const token = getToken(TOKEN_TYPE.ACCESS);
+  console.log("createTravel", params);
+
+  local
+    .post(
+      `/travels`,
+      params, // request body
+      {
+        // config object
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    .then(success)
+    .catch(fail);
+}
+
+export { listTravels, createTravel };
