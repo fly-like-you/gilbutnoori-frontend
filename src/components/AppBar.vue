@@ -76,7 +76,7 @@ export default {
 
       <!-- 메인 네비게이션 -->
       <v-toolbar-items class="d-none d-md-flex">
-        <v-btn text class="mx-2" @click="() => handleProtectedRoute('CourseList')">
+        <v-btn text class="mx-2" @click="() => handleProtectedRoute('TravelPlanner')">
           <v-icon start>mdi-airplane</v-icon>
           여행 계획하기
         </v-btn>

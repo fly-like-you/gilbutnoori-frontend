@@ -1,13 +1,11 @@
 import { createRouter, createWebHistory } from "vue-router";
 import { getToken, TOKEN_TYPE } from "@/util/auth";
 import HomePage from "../views/HomePage.vue";
-import CourseRecommend from "../views/CourseRecommend.vue"; // 경로 수정
-
 import RouteDetail from "@/components/route/RouteDetail.vue";
-import CourseList from "@/components/course/CourseList.vue";
 import CourseDetail from "@/components/course/CourseDetail.vue";
 import AttractionMap from "@/components/attraction/AttractionMap.vue";
-import SupportPage from "@/views/SupportPage.vue";
+import TravelPlanner from "@/components/travel/TravelPlanner.vue";
+import TravelPlanPlanner from "@/components/travel/plan/TravelPlanPlanner.vue";
 
 const routes = [
   {
@@ -20,21 +18,13 @@ const routes = [
     name: "CourseDetail",
     component: CourseDetail,
   },
-  {
-    path: "/recommend",
-    name: "CourseRecommend",
-    component: CourseRecommend,
-  },
+
   {
     path: "/attraction",
     name: "AttractionMap",
     component: AttractionMap,
   },
-  {
-    path: "/support",
-    name: "SupportPage",
-    componemt: SupportPage,
-  },
+
   {
     path: "/signup",
     name: "Signup",
@@ -77,19 +67,14 @@ const routes = [
   },
 
   {
-    path: "/nearby",
-    name: "NearbyCourse",
-    component: () => import("../components/course/NearbyCourse.vue"),
-  },
-  {
-    path: "/recommend",
-    name: "CourseRecommend",
-    component: () => import("../views/CourseRecommend.vue"),
-  },
-  {
     path: "/travel",
-    name: "CourseList",
-    component: CourseList,
+    name: "TravelPlanner",
+    component: TravelPlanner,
+  },
+  {
+    path: "/travel/plan/:id",
+    name: "TravelPlanPlanner",
+    component: TravelPlanPlanner,
   },
 ];
 

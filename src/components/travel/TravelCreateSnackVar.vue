@@ -118,13 +118,13 @@ const travelContent = ref("");
 // 프로그레스 바 타이머
 let progressInterval;
 
-const startProgress = () => {
+const startProgress = (travelId) => {
   progress.value = 0;
   progressInterval = setInterval(() => {
     progress.value += 2;
     if (progress.value >= 100) {
       clearInterval(progressInterval);
-      navigateToMyPage();
+      navigateToMyPage(travelId);
     }
   }, 40);
 };
@@ -152,7 +152,7 @@ const submitTravel = async () => {
       if (response.data.isSuccess) {
         dialogModel.value = false;
         showSnackbar.value = true;
-        startProgress();
+        startProgress(response.data.result.id);
         resetForm();
         emit("travel-created"); // 부모 컴포넌트에 생성 완료 알림
       }
@@ -163,10 +163,16 @@ const submitTravel = async () => {
   );
 };
 
-const navigateToMyPage = () => {
+const navigateToMyPage = (travelId) => {
   clearInterval(progressInterval);
   showSnackbar.value = false;
-  router.push("/mypage");
+  console.log(travelId);
+  router.push({
+    name: "TravelPlanPlanner",
+    params: {
+      id: travelId,
+    },
+  });
 };
 
 // 컴포넌트가 언마운트될 때 타이머 정리
