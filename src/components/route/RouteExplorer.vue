@@ -50,9 +50,13 @@ const selectRoute = (route) => {
   });
   // 필요한 경우 라우터를 통한 상세 페이지 이동 로직 추가
 };
-
+const moveCourseDetail = (courseId) => {
+  router.push({
+    name: "CourseDetail",
+    params: { id: courseId },
+  });
+};
 // 코스 목록 가져오기
-// 코스 목록 가져오기 함수 수정
 const fetchCourses = async (page = 1) => {
   try {
     loadingCourses.value = true;
@@ -209,7 +213,7 @@ onMounted(() => {
 
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="primary" variant="text" @click.stop="viewCourseDetail(course.id)"> 상세 보기 </v-btn>
+                    <v-btn color="primary" variant="text" @click.stop="moveCourseDetail(course.id)"> 상세 보기 </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>

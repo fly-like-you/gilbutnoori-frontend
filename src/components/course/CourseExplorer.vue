@@ -177,7 +177,7 @@ const selectCourse = (course) => {
 // 코스 상세 보기
 const viewCourseDetail = (courseId) => {
   router.push({
-    name: "RouteDetail",
+    name: "CourseDetail",
     params: {
       id: courseId,
     },
