@@ -24,10 +24,20 @@
 
           <v-row class="mt-2">
             <v-col cols="6">
-              <v-text-field :value="selectedDate" label="여행 날짜" readonly disabled></v-text-field>
+              <v-text-field
+                :value="selectedDate"
+                label="여행 날짜"
+                readonly
+                disabled
+              ></v-text-field>
             </v-col>
             <v-col cols="6">
-              <v-text-field :value="selectedCourse?.name" label="선택된 코스" readonly disabled></v-text-field>
+              <v-text-field
+                :value="selectedCourse?.name"
+                label="선택된 코스"
+                readonly
+                disabled
+              ></v-text-field>
             </v-col>
           </v-row>
         </v-form>
@@ -72,6 +82,7 @@
 import { ref, computed, watch, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { createTravel } from "@/api/travel";
+import { useCourseStore } from "@/store/travel";
 
 // v-model 바인딩을 위한 computed 속성
 
@@ -114,6 +125,7 @@ const isSubmitting = ref(false);
 const progress = ref(0);
 const travelTitle = ref("");
 const travelContent = ref("");
+const courseStore = useCourseStore();
 
 // 프로그레스 바 타이머
 let progressInterval;
@@ -167,10 +179,15 @@ const navigateToMyPage = (travelId) => {
   clearInterval(progressInterval);
   showSnackbar.value = false;
   console.log(travelId);
+
+  // 현재 선택된 코스 정보를 가져와서 저장
+  const currentCourse = courseStore.getSelectedCourse;
+  console.log("전송하기 -> ", currentCourse);
   router.push({
     name: "TravelPlanPlanner",
     params: {
-      id: travelId,
+      travelId: travelId,
+      courseId: currentCourse,
     },
   });
 };
@@ -188,6 +205,16 @@ watch(dialogModel, (newValue) => {
     resetForm();
   }
 });
+
+// props가 변경될 때마다 store에 저장
+watch(
+  () => props.selectedCourse,
+  (newCourse) => {
+    console.log(newCourse);
+    courseStore.setSelectedCourse(newCourse);
+  },
+  { immediate: true }
+); // immediate: true로 설정하여 초기값도 저장
 </script>
 
 <style scoped>

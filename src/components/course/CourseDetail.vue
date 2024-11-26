@@ -1,6 +1,11 @@
 <template>
   <v-container>
-    <v-progress-circular v-if="!result" indeterminate color="primary" class="ma-auto d-block"></v-progress-circular>
+    <v-progress-circular
+      v-if="!result"
+      indeterminate
+      color="primary"
+      class="ma-auto d-block"
+    ></v-progress-circular>
 
     <template v-else>
       <!-- 코스 기본 정보 섹션 -->

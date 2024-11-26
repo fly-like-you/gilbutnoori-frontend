@@ -70,9 +70,10 @@ const routes = [
     path: "/travel",
     name: "TravelPlanner",
     component: TravelPlanner,
+    meta: { requiresAuth: true },
   },
   {
-    path: "/travel/plan/:id",
+    path: "/travel/:travelId/course/:courseId",
     name: "TravelPlanPlanner",
     component: TravelPlanPlanner,
   },

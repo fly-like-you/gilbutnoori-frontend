@@ -70,7 +70,12 @@
 
           <!-- 여행 생성 버튼 -->
           <v-card-actions class="justify-center pb-4">
-            <v-btn color="primary" :disabled="!isAllSelected" @click="openTravelDialog" size="large">
+            <v-btn
+              color="primary"
+              :disabled="!isAllSelected"
+              @click="openTravelDialog"
+              size="large"
+            >
               여행 생성하기
             </v-btn>
           </v-card-actions>
@@ -89,7 +94,11 @@
                 <CourseDetail :course-id="currentCourseId" />
               </div>
               <div v-else-if="displayWeatherDetail">
-                <WeatherDetail :route-id="selectedRoute" :course-id="selectedCourse" :selected-date="selectedDate" />
+                <Weather-Detail
+                  :route-id="selectedRoute"
+                  :course-id="selectedCourse"
+                  :selected-date="selectedDate"
+                />
               </div>
               <div v-else class="d-flex justify-center align-center fill-height">
                 <v-icon size="64" color="grey lighten-1">mdi-map-search</v-icon>
@@ -147,7 +156,6 @@ const handleTravelCreated = () => {
   // 필요한 경우 부모 컴포넌트에서 추가 작업 수행
   // 예: 폼 초기화, 데이터 새로고침 등
   selectedRoute.value = null;
-  selectedCourse.value = null;
   selectedDate.value = null;
 };
 
@@ -160,7 +168,9 @@ const currentCourseId = computed(() => hoveredCourseId.value || selectedCourse.v
 // 표시 상태 계산
 const displayRouteDetail = computed(
   () =>
-    (isRouteSelectFocused.value || hoveredRouteId.value) && !isCourseSelectFocused.value && !isDatePickerFocused.value
+    (isRouteSelectFocused.value || hoveredRouteId.value) &&
+    !isCourseSelectFocused.value &&
+    !isDatePickerFocused.value
 );
 
 const displayCourseDetail = computed(
@@ -170,7 +180,9 @@ const displayCourseDetail = computed(
 );
 
 const displayWeatherDetail = computed(
-  () => isDatePickerFocused.value || (selectedDate.value && !isRouteSelectFocused.value && !isCourseSelectFocused.value)
+  () =>
+    isDatePickerFocused.value ||
+    (selectedDate.value && !isRouteSelectFocused.value && !isCourseSelectFocused.value)
 );
 const isAllSelected = computed(() => {
   return selectedRoute.value && selectedCourse.value && selectedDate.value;

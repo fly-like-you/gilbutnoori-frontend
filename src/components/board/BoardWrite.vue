@@ -249,7 +249,7 @@ const fetchTravels = async () => {
 // 여행 선택
 const selectTravel = (travel) => {
   selectedTravel.value = travel;
-  console.log("Selected travel plans:", travel.plans.planResult);
+  console.log("Selected travel plans:", selectedTravel);
 };
 
 // 이미지 미리보기 생성

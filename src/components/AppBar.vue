@@ -81,21 +81,11 @@ export default {
           여행 계획하기
         </v-btn>
 
-        <v-btn v-if="isAuthenticated" text class="mx-2" @click="() => handleProtectedRoute('AttractionMap')">
-          <v-icon start>mdi-calendar</v-icon>
-          여행지
-        </v-btn>
-
         <v-btn text class="mx-2" @click="() => handleProtectedRoute('BoardList')">
           <v-icon start>mdi-post</v-icon>
           게시판
         </v-btn>
       </v-toolbar-items>
-
-      <v-btn text class="mx-2" @click="() => handleProtectedRoute('SupportPage')">
-        <v-icon start>mdi-help-circle</v-icon>
-        고객지원
-      </v-btn>
 
       <!-- 비로그인 상태 -->
       <template v-if="!isAuthenticated">

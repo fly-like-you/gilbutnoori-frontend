@@ -27,7 +27,11 @@
           <div class="daily-forecast">
             <h3 class="text-h6 mb-4">5일 예보</h3>
             <v-list>
-              <v-list-item v-for="item in getDailyForecast(weatherData.forecast.list)" :key="item.dt_txt" class="mb-2">
+              <v-list-item
+                v-for="item in getDailyForecast(weatherData.forecast.list)"
+                :key="item.dt_txt"
+                class="mb-2"
+              >
                 <template v-slot:prepend>
                   <v-icon :color="getWeatherIconColor(item.weather[0].main)">
                     {{ getWeatherIcon(item.weather[0].main) }}
@@ -77,10 +81,10 @@ const isLoading = ref(false);
 
 // 둘레길별 대표 도시 매핑
 const routeToCity = {
-  T_ROUTE_MNG0000000043: "busan", // 남파랑길
+  T_ROUTE_MNG0000000001: "busan", // 남파랑길
   T_ROUTE_MNG0000000047: "changwon", // DMZ 평화의 길
   T_THEME_MNG0000011235: "ulsan", // 해파랑길
-  T_ROUTE_MNG0000000001: "daejeon", // 서해랑길
+  T_ROUTE_MNG0000000043: "daejeon", // 서해랑길
 };
 
 // 도시 한글명 매핑
